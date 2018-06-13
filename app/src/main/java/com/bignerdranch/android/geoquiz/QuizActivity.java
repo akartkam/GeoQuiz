@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
@@ -28,6 +31,8 @@ public class QuizActivity extends AppCompatActivity {
             new Question(R.string.question_asia, true),
     };
     private int mCurrentIndex = 0;
+    private Map<Question, Boolean> resAnswers = new HashMap<Question, Boolean>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(true);
+                toggleAnswerButtons(false);
             }
         });
         mFalseButton = (Button) findViewById(R.id.false_button);
@@ -50,6 +56,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
+                toggleAnswerButtons(false);
             }
         });
         mNextButton = (Button) findViewById(R.id.next_button);
@@ -59,6 +66,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+                toggleAnswerButtons(!resAnswers.containsKey(mQuestionBank[mCurrentIndex]));
             }
         };
         mNextButton.setOnClickListener(NextCL);
@@ -71,11 +79,25 @@ public class QuizActivity extends AppCompatActivity {
                     mCurrentIndex = (mCurrentIndex - 1);
                     updateQuestion();
                 }
+                toggleAnswerButtons(!resAnswers.containsKey(mQuestionBank[mCurrentIndex]));
             }
         });
 
         updateQuestion();
     }
+
+    private int calcPersentAnswers(){
+       int t = resAnswers.size();
+       int ca = 0;
+       for (Boolean b : resAnswers.values()) ca = b ? ca++ : ca ;
+       return (int)(ca / t) * 100;
+    }
+
+    private void toggleAnswerButtons(Boolean val) {
+        mTrueButton.setEnabled(val);
+        mFalseButton.setEnabled(val);
+    }
+
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
@@ -122,6 +144,7 @@ public class QuizActivity extends AppCompatActivity {
         } else {
             messageResId = R.string.incorrect_toast;
         }
+        resAnswers.put(mQuestionBank[mCurrentIndex], messageResId == R.string.correct_toast);
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
                 .show();
     }
