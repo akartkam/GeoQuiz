@@ -1,5 +1,6 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,6 +49,10 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(true);
+                if (mCurrentIndex == 5) {
+                    Resources res = getResources();
+                    Toast.makeText(QuizActivity.this, res.getString(R.string.score_text, 100), Toast.LENGTH_SHORT).show();
+                }
                 toggleAnswerButtons(false);
             }
         });
