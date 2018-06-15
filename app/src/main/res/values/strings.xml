@@ -12,5 +12,5 @@
     <string name="incorrect_toast">Incorrect!</string>
     <string name="next_button">Next</string>
     <string name="prev_button">Prev</string>
-    <string name="score_text">Right answers are : %1$d</string>
+    <string name="score_text">Right answers are : %1$.2f %2$s</string>
 </resources>

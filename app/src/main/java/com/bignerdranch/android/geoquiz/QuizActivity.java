@@ -49,10 +49,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(true);
-                if (mCurrentIndex == 5) {
-                    Resources res = getResources();
-                    Toast.makeText(QuizActivity.this, res.getString(R.string.score_text, 100), Toast.LENGTH_SHORT).show();
-                }
+                showScoreIfLastQuestion();
                 toggleAnswerButtons(false);
             }
         });
@@ -61,6 +58,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
+                showScoreIfLastQuestion();
                 toggleAnswerButtons(false);
             }
         });
@@ -91,11 +89,19 @@ public class QuizActivity extends AppCompatActivity {
         updateQuestion();
     }
 
-    private int calcPersentAnswers(){
+    private void showScoreIfLastQuestion() {
+        if (mCurrentIndex == mQuestionBank.length - 1 ) {
+            Double r = calcPersentAnswers();
+            String s  = String.format(getResources().getString(R.string.score_text), r, "%");
+            Toast.makeText(QuizActivity.this, s, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Double calcPersentAnswers(){
        int t = resAnswers.size();
        int ca = 0;
-       for (Boolean b : resAnswers.values()) ca = b ? ca++ : ca ;
-       return (int)(ca / t) * 100;
+       for (Boolean b : resAnswers.values()) ca +=  b ? 1 : 0 ;
+       return Double.valueOf(ca * 100 / t);
     }
 
     private void toggleAnswerButtons(Boolean val) {
